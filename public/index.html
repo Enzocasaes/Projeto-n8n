@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>True Random Number Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f9; }
+    .container { background: #e0e0ff; max-width: 320px; margin: 40px auto; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 20px; }
+    h2 { background: #bdb7f6; margin: -20px -20px 20px -20px; padding: 12px 0; border-radius: 8px 8px 0 0; text-align: center; }
+    label { display: block; margin: 10px 0 4px; }
+    input[type=number] { width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #bbb; }
+    button { margin: 16px 0 0; width: 100%; padding: 10px; background: #4caf50; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+    button:hover { background: #388e3c; }
+    .result { background: #bdb7f6; margin-top: 18px; padding: 16px; border-radius: 6px; text-align: center; font-size: 1.5em; }
+    .meta { font-size: 0.9em; color: #333; margin-top: 8px; }
+    .powered { font-size: 0.8em; color: #888; margin-top: 10px; text-align: right; }
+    .error { color: #c00; margin-top: 10px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>True Random Number Generator</h2>
+    <form id="randomForm">
+      <label for="min">Min:</label>
+      <input type="number" id="min" name="min" value="1" required>
+      <label for="max">Max:</label>
+      <input type="number" id="max" name="max" value="100" required>
+      <button type="submit">Generate</button>
+    </form>
+    <div id="resultBox" style="display:none;">
+      <div class="result" id="result"></div>
+      <div class="meta" id="meta"></div>
+    </div>
+    <div class="error" id="error"></div>
+    <div class="powered">Powered by <a href="https://random.org" target="_blank">RANDOM.ORG</a></div>
+  </div>
+  <script>
+    const form = document.getElementById('randomForm');
+    const resultBox = document.getElementById('resultBox');
+    const resultDiv = document.getElementById('result');
+    const metaDiv = document.getElementById('meta');
+    const errorDiv = document.getElementById('error');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorDiv.textContent = '';
+      resultBox.style.display = 'none';
+      const min = parseInt(form.min.value, 10);
+      const max = parseInt(form.max.value, 10);
+      if (isNaN(min) || isNaN(max) || min > max) {
+        errorDiv.textContent = 'Please enter valid Min and Max values (Min ≤ Max).';
+        return;
+      }
+      try {
+        const response = await fetch('/api/random', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ min, max })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Erro desconhecido');
+        resultDiv.textContent = data.result;
+        metaDiv.textContent = `Min: ${data.min}, Max: ${data.max}  |  ${data.datetime.replace('T',' ').replace('Z',' UTC')}`;
+        resultBox.style.display = 'block';
+      } catch (err) {
+        errorDiv.textContent = 'Erro ao buscar número randômico.';
+      }
+    });
+  </script>
+</body>
+</html>
