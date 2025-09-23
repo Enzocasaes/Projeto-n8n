@@ -1,17 +1,25 @@
 {
-  "name": "projeto-n8n",
+  "name": "n8n-custom-node-random",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Random number generator node for n8n",
+  "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:restart": "docker-compose restart"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "n8n",
+    "random",
+    "random.org"
+  ],
+  "author": "Enzo",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
@@ -19,6 +27,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "n8n-workflow": "^1.85.4"
   }
 }
