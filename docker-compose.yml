@@ -12,7 +12,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   n8n:
-    image: n8nio/n8n:latest
+    image: n8nio/n8n:1.85.4
     restart: always
     ports:
       - '5678:5678'
@@ -29,13 +29,12 @@ services:
       - N8N_HOST=localhost
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
-      - N8N_CUSTOM_EXTENSIONS=/home/node/.n8n/custom-nodes
+      - N8N_CUSTOM_EXTENSIONS=/home/node/.n8n/custom
     depends_on:
       - postgres
     volumes:
       - n8n_data:/home/node/.n8n
-      - ./custom-nodes/Random:/home/node/.n8n/custom-nodes/Random
-      - ./src/connectors/random-icon.svg:/home/node/.n8n/custom-nodes/Random/random-icon.svg
+      - ./.n8n/custom:/home/node/.n8n/custom
 
   app:
     build: .
